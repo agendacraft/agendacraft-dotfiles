@@ -32,6 +32,8 @@ packages=()
 command -v git >/dev/null 2>&1 || packages+=(git)
 command -v tmux >/dev/null 2>&1 || packages+=(tmux)
 command -v curl >/dev/null 2>&1 || packages+=(curl)
+command -v ssh >/dev/null 2>&1 || packages+=(openssh-client)
+[[ -s /etc/ssl/certs/ca-certificates.crt ]] || packages+=(ca-certificates)
 
 if (( ${#packages[@]} > 0 )); then
   "${SUDO[@]}" apt-get update
