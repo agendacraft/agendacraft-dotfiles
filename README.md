@@ -1,50 +1,13 @@
 # AgendaCraft VPS dotfiles
 
 ```bash
-git clone git@github.com:agendacraft/agendacraft-dotfiles.git && cd agendacraft-dotfiles
+git clone https://github.com/agendacraft/agendacraft-dotfiles.git && cd agendacraft-dotfiles
 ./bootstrap.sh
 ```
 
-This private repository provides the interactive shell environment for AgendaCraft VPS hosts. It configures a production-forward Starship prompt, a practical offline-friendly tmux setup, and a small Bash startup snippet. It currently targets Ubuntu hosts using Bash (including the production droplet's `root` account).
+This public repository provides the interactive shell environment for AgendaCraft VPS hosts. It configures a production-forward Starship prompt, a practical offline-friendly tmux setup, and a small Bash startup snippet. It currently targets Ubuntu hosts using Bash (including the production droplet's `root` account). No credentials, deploy keys, or GitHub login are needed to clone or update it.
 
 `bootstrap.sh` is intended for a fresh Ubuntu box. It installs missing prerequisites, installs Starship with the official installer, updates or clones this repository, and then runs `install.sh`. Both scripts are safe to rerun. `install.sh` can also be run on its own when the prerequisites are already present.
-
-## Private repository access
-
-Configure access before using the quickstart. A read-only SSH deploy key is preferred on a VPS because it grants access only to this repository.
-
-### Read-only deploy key (recommended)
-
-Run these commands on the new host as the account that will own the dotfiles:
-
-```bash
-install -d -m 700 "$HOME/.ssh"
-ssh-keygen -t ed25519 -N '' -C "agendacraft-dotfiles@$(hostname -f)" -f "$HOME/.ssh/agendacraft-dotfiles"
-printf '%s\n' 'Host github.com' '  HostName github.com' '  User git' "  IdentityFile $HOME/.ssh/agendacraft-dotfiles" '  IdentitiesOnly yes' >> "$HOME/.ssh/config"
-chmod 600 "$HOME/.ssh/config"
-cat "$HOME/.ssh/agendacraft-dotfiles.pub"
-```
-
-In GitHub, open **agendacraft/agendacraft-dotfiles → Settings → Deploy keys → Add deploy key**, paste the printed public key, and leave **Allow write access** unchecked. Then verify access:
-
-```bash
-ssh -T git@github.com
-git ls-remote git@github.com:agendacraft/agendacraft-dotfiles.git HEAD
-```
-
-For `ssh -T`, look for GitHub's “successfully authenticated” message. GitHub does not provide shell access, so that successful authentication test intentionally exits with status 1. Use `git ls-remote` as the repository-access check that returns the normal success status 0.
-
-If the host already uses a different `github.com` SSH identity, use a dedicated SSH host alias instead of appending the block above.
-
-### GitHub CLI authentication (alternative)
-
-If GitHub CLI is already installed and interactive user credentials are appropriate:
-
-```bash
-gh auth login --hostname github.com --git-protocol ssh --web
-gh auth setup-git
-git ls-remote git@github.com:agendacraft/agendacraft-dotfiles.git HEAD
-```
 
 ## What gets installed
 
@@ -62,8 +25,5 @@ This repository owns user-facing shell configuration only. System provisioning b
 ## Add a new host
 
 1. Provision the Ubuntu host through `agendacraft/deploy/ansible/`.
-2. Give the target account read-only access to this private repository using a per-host deploy key (preferred) or GitHub CLI authentication.
-3. Run the two-command quickstart as the target account.
-4. Start a new login shell and confirm the prompt shows the expected red `PROD:<hostname>` marker; then run `tmux` and confirm the host and load appear in its status bar.
-
-Do not share a private deploy key between hosts. Remove that host's deploy key from GitHub when the host is retired.
+2. Run the two-command quickstart as the target account; the public repository requires no credentials.
+3. Start a new login shell and confirm the prompt shows the expected red `PROD:<hostname>` marker; then run `tmux` and confirm the host and load appear in its status bar.

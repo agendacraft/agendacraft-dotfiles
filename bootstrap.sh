@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPOSITORY_SSH="git@github.com:agendacraft/agendacraft-dotfiles.git"
+REPOSITORY_URL="https://github.com/agendacraft/agendacraft-dotfiles.git"
 DEFAULT_REPO_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/agendacraft-dotfiles"
 STARSHIP_VERSION="v1.25.1"
 STARSHIP_INSTALLER_COMMIT="8758daa7767d4e73874330b1e262fca66a7ffd30"
@@ -32,7 +32,6 @@ packages=()
 command -v git >/dev/null 2>&1 || packages+=(git)
 command -v tmux >/dev/null 2>&1 || packages+=(tmux)
 command -v curl >/dev/null 2>&1 || packages+=(curl)
-command -v ssh >/dev/null 2>&1 || packages+=(openssh-client)
 [[ -s /etc/ssl/certs/ca-certificates.crt ]] || packages+=(ca-certificates)
 
 if (( ${#packages[@]} > 0 )); then
@@ -58,6 +57,7 @@ if ! command -v starship >/dev/null 2>&1; then
 fi
 
 if [[ -d "$REPO_DIR/.git" || -f "$REPO_DIR/.git" ]]; then
+  git -C "$REPO_DIR" remote set-url origin "$REPOSITORY_URL"
   git -C "$REPO_DIR" fetch origin main
   current_branch=$(git -C "$REPO_DIR" symbolic-ref --quiet --short HEAD || true)
   if [[ "$current_branch" == "main" ]]; then
@@ -67,7 +67,7 @@ if [[ -d "$REPO_DIR/.git" || -f "$REPO_DIR/.git" ]]; then
   fi
 else
   mkdir -p -- "$(dirname -- "$REPO_DIR")"
-  git clone --branch main --single-branch "$REPOSITORY_SSH" "$REPO_DIR"
+  git clone --branch main --single-branch "$REPOSITORY_URL" "$REPO_DIR"
 fi
 
 "$REPO_DIR/install.sh"
