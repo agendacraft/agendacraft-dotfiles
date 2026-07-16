@@ -31,9 +31,40 @@ backup_and_link() {
   ln -s -- "$source" "$destination"
 }
 
-backup_and_link "$REPO_DIR/starship/starship.toml" "$CONFIG_DIR/starship.toml"
-backup_and_link "$REPO_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
-backup_and_link "$REPO_DIR/shell/bashrc.d/agendacraft.sh" "$SHELL_SNIPPET_DIR/agendacraft.sh"
+preflight_link() {
+  local source=$1
+  local destination=$2
+  local backup="${destination}.bak"
+
+  if [[ ! -f "$source" ]]; then
+    printf 'Required dotfile source is missing: %s\n' "$source" >&2
+    return 1
+  fi
+
+  if [[ ! -L "$destination" && -e "$destination" && ( -e "$backup" || -L "$backup" ) ]]; then
+    printf 'Refusing to replace %s: backup already exists at %s\n' "$destination" "$backup" >&2
+    return 1
+  fi
+}
+
+sources=(
+  "$REPO_DIR/starship/starship.toml"
+  "$REPO_DIR/tmux/tmux.conf"
+  "$REPO_DIR/shell/bashrc.d/agendacraft.sh"
+)
+destinations=(
+  "$CONFIG_DIR/starship.toml"
+  "$HOME/.tmux.conf"
+  "$SHELL_SNIPPET_DIR/agendacraft.sh"
+)
+
+for index in "${!sources[@]}"; do
+  preflight_link "${sources[index]}" "${destinations[index]}"
+done
+
+for index in "${!sources[@]}"; do
+  backup_and_link "${sources[index]}" "${destinations[index]}"
+done
 
 touch -- "$BASHRC"
 if ! grep -Fqx -- "$MARKER_START" "$BASHRC"; then

@@ -3,6 +3,9 @@ set -euo pipefail
 
 REPOSITORY_SSH="git@github.com:agendacraft/agendacraft-dotfiles.git"
 DEFAULT_REPO_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/agendacraft-dotfiles"
+STARSHIP_VERSION="v1.25.1"
+STARSHIP_INSTALLER_COMMIT="8758daa7767d4e73874330b1e262fca66a7ffd30"
+STARSHIP_INSTALLER_SHA256="52c64f14a558034ebeb1907ea9364e802b32474576fd3e68265f73bc33cc8fbb"
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 
 if [[ -d "$SCRIPT_DIR/.git" || -f "$SCRIPT_DIR/.git" ]]; then
@@ -39,8 +42,15 @@ if ! command -v starship >/dev/null 2>&1; then
   installer=$(mktemp)
   cleanup() { rm -f -- "$installer"; }
   trap cleanup EXIT
-  curl --fail --silent --show-error --location https://starship.rs/install.sh --output "$installer"
-  "${SUDO[@]}" sh "$installer" --yes
+  installer_url="https://raw.githubusercontent.com/starship/starship/${STARSHIP_INSTALLER_COMMIT}/install/install.sh"
+  curl --fail --silent --show-error --location \
+    --proto '=https' --proto-redir '=https' \
+    "$installer_url" --output "$installer"
+  if ! printf '%s  %s\n' "$STARSHIP_INSTALLER_SHA256" "$installer" | sha256sum --check --status; then
+    printf 'Starship installer checksum verification failed.\n' >&2
+    exit 1
+  fi
+  "${SUDO[@]}" sh "$installer" --yes --version "$STARSHIP_VERSION"
   cleanup
   trap - EXIT
 fi

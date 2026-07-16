@@ -32,6 +32,8 @@ ssh -T git@github.com
 git ls-remote git@github.com:agendacraft/agendacraft-dotfiles.git HEAD
 ```
 
+For `ssh -T`, look for GitHub's “successfully authenticated” message. GitHub does not provide shell access, so that successful authentication test intentionally exits with status 1. Use `git ls-remote` as the repository-access check that returns the normal success status 0.
+
 If the host already uses a different `github.com` SSH identity, use a dedicated SSH host alias instead of appending the block above.
 
 ### GitHub CLI authentication (alternative)
