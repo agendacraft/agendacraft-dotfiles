@@ -8,8 +8,10 @@ git clone https://github.com/agendacraft/agendacraft-dotfiles.git && cd agendacr
 The clone-first quickstart assumes Git is already available. On a completely minimal Ubuntu/Debian image, install the clone prerequisites first, then run the two commands above:
 
 ```bash
-apt-get update && apt-get install -y --no-install-recommends git ca-certificates
+sudo apt-get update && sudo apt-get install -y --no-install-recommends git ca-certificates
 ```
+
+When logged in as `root`, omit `sudo` from both commands.
 
 This public repository provides the interactive shell environment for AgendaCraft VPS hosts. It configures Starship, a practical offline-friendly tmux setup, and a small Bash startup snippet. It currently targets Ubuntu hosts using Bash (including the production droplet's `root` account). No credentials, deploy keys, or GitHub login are needed to clone or update it.
 
