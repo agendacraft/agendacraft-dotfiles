@@ -1,0 +1,2 @@
+# AgendaCraft intentionally uses Starship's built-in defaults.
+# On SSH sessions, the default prompt includes the hostname.
