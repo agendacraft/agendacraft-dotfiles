@@ -57,7 +57,11 @@ if ! command -v starship >/dev/null 2>&1; then
 fi
 
 if [[ -d "$REPO_DIR/.git" || -f "$REPO_DIR/.git" ]]; then
-  git -C "$REPO_DIR" remote set-url origin "$REPOSITORY_URL"
+  if git -C "$REPO_DIR" remote get-url origin >/dev/null 2>&1; then
+    git -C "$REPO_DIR" remote set-url origin "$REPOSITORY_URL"
+  else
+    git -C "$REPO_DIR" remote add origin "$REPOSITORY_URL"
+  fi
   git -C "$REPO_DIR" fetch origin main
   current_branch=$(git -C "$REPO_DIR" symbolic-ref --quiet --short HEAD || true)
   if [[ "$current_branch" == "main" ]]; then
