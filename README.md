@@ -11,9 +11,7 @@ The clone-first quickstart assumes Git is already available. On a completely min
 sudo apt-get update && sudo apt-get install -y --no-install-recommends git ca-certificates
 ```
 
-When logged in as `root`, omit `sudo` from both commands.
-
-This public repository provides the interactive shell environment for AgendaCraft VPS hosts. It configures Starship, a practical offline-friendly tmux setup, and a small Bash startup snippet. It currently targets Ubuntu hosts using Bash (including the production droplet's `root` account). No credentials, deploy keys, or GitHub login are needed to clone or update it.
+This public repository provides the interactive shell environment for AgendaCraft VPS hosts. It configures Starship, a practical offline-friendly tmux setup, and a small Bash startup snippet. It currently targets Ubuntu hosts using Bash. No credentials, deploy keys, or GitHub login are needed to clone or update it.
 
 `bootstrap.sh` is intended for a fresh Ubuntu box. It installs missing prerequisites, installs Starship with the official installer, updates or clones this repository, and then runs `install.sh`. Both scripts are safe to rerun. `install.sh` can also be run on its own when the prerequisites are already present.
 
